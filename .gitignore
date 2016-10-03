@@ -1,0 +1,6 @@
+.tmp
+.idea
+node_modules
+dist
+src/fixture/clients.1.min.json
+src/fixture/clients.2.min.json

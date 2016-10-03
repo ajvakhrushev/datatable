@@ -1,0 +1,19 @@
+{
+  "name": "datatable",
+  "version": "0.0.1",
+  "description": "smart datatable",
+  "main": "src/server/index.js",
+  "dependencies": {
+    "ag-grid": "^6.0.0"
+  },
+  "devDependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "fs": "0.0.2",
+    "node-json-minify": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node src/server/index.js"
+  },
+  "author": ""
+}
