@@ -21,12 +21,8 @@ const config = (function() {
 
 }());
 
-// var data1 = JSON.parse(fs.readFileSync(config.path.fixture + '/clients.1.min.json', 'utf8'));
-// var data2 = JSON.parse(fs.readFileSync(config.path.fixture + '/clients.2.min.json', 'utf8'));
-
 var data = {
-  // stable: data1.concat(data2),
-  stable: JSON.parse(fs.readFileSync(config.path.fixture + '/clients.min.json', 'utf8')),
+  stable: fetchData(),
   cache: null
 };
 
@@ -54,15 +50,37 @@ var request = {
 };
 
 function fetchData() {
-  return JSON.parse(fs.readFileSync(config.path.fixture + '/data.json', 'utf8'));
-  // return JSON.parse(fs.readFileSync(config.path.fixture + '/olympicWinners.json', 'utf8'));
-  // return JSON.parse(fs.readFileSync(config.path.fixture + '/clients.json', 'utf8'));
+  // test for 1 000 000 entities
+  // var data1 = JSON.parse(fs.readFileSync(config.path.fixture + '/clients.1.min.json', 'utf8'));
+  // var data2 = JSON.parse(fs.readFileSync(config.path.fixture + '/clients.2.min.json', 'utf8'));
+  // var data = data1.concat(data2);
+  // test for 100 000 entities
+  var data = JSON.parse(fs.readFileSync(config.path.fixture + '/clients.min.json', 'utf8'));
+
+  return data;
 }
 
 function makeMultiplyFilterFn(list) {
-   return function(next) {
-      return true;
-   };
+  var length = list.length,
+      strategies = list.map((next) => {
+        var strategy = filterStrategies.define(next);
+
+        next.method = strategy ? strategy.method : undefined;
+
+        return next;
+      });
+
+  return function(next) {
+    for(i = 0; i < length; i++) {
+      var item = strategies[i];
+
+      if(!item.method(next[item.key], item.value)) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 }
 
 function makeMultiplySortFn(list) {
@@ -166,3 +184,66 @@ api.listen(9000, function () {
 });
 
 // *********************************************************
+
+var filterStrategies = (function() {
+
+  var list = [
+    {
+      category: 'common',
+      type: 'equals',
+      method: (value, search) => value === search
+    },
+    {
+      category: 'common',
+      type: 'notEqual',
+      method: (value, search) => value !== search
+    },
+    {
+      category: 'number',
+      type: 'lessThan',
+      method: (value, search) => value < search
+    },
+    {
+      category: 'number',
+      type: 'lessThanOrEqual',
+      method: (value, search) => value <= search
+    },
+    {
+      category: 'number',
+      type: 'greaterThan',
+      method: (value, search) => value > search
+    },
+    {
+      category: 'number',
+      type: 'greaterThanOrEqual',
+      method: (value, search) => value >= search
+    },
+    {
+      category: 'string',
+      type: 'contains',
+      method: (value, search) => value.indexOf(search) !== -1
+    },
+    {
+      category: 'string',
+      type: 'startsWith',
+      method: (value, search) => value.startsWith(search)
+    },
+    {
+      category: 'string',
+      type: 'endsWith',
+      method: (value, search) => value.endsWith(search)
+    },
+  ];
+
+  return {
+    list: list,
+    define: function() {
+      var data = arguments[0] || {};
+
+      // return list .filter((next) => data.category === 'common' || next.category === data.category)
+      return list .filter((next) => next.category === 'common' || next.category === 'number')
+                  .find((next) => next.type === data.type);
+    }
+  };
+
+}());

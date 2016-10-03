@@ -37,6 +37,7 @@
       this.columnDefault = {
         // suppressMenu: true,
         unSortIcon: true,
+        filterParams: {apply: true},
         width: 150,
         minWidth: 150,
         maxWidth: 150
@@ -63,6 +64,7 @@
         Object.assign({}, this.columnDefault, {
           field: "age",
           headerName:  "Age",
+          filter: 'number',
           width: 75,
           minWidth: 75,
           maxWidth: 75
@@ -135,10 +137,45 @@
             rowCount: null,
             store: {
               filter: {
-                list: [],
-                mapFilterForModel: function() {
-                  return [];
-                }
+                hash: {},
+                mapFilterForModel: (function() {
+
+                  function mapItem(key, value) {
+                    var data = value || {};
+
+                    return {
+                      key: key,
+                      value: data.filter,
+                      type: data.type
+                    };
+                  }
+
+                  return function(hash) {
+                    var self = this,
+                        nextList = [];
+
+                    for(var i in self.hash) {
+                      if(!self.hash.hasOwnProperty(i)) {
+                        continue;
+                      }
+
+                      nextList.push(hash[i] ? mapItem(i, hash[i]) : mapItem(i, {filter: undefined}));
+                    }
+
+                    for(var i in hash) {
+                      if(!hash.hasOwnProperty(i)) {
+                        continue;
+                      }
+
+                      if(!self.hash[i]) {
+                        nextList.push(mapItem(i, hash[i]));
+                      }
+                    }
+
+                    return nextList;
+                  };
+
+                }())
               },
               order: {
                 list: [],
@@ -196,36 +233,36 @@
               },
             },
             getRows: function(params) {
-                var nextOrder = params.sortModel || [],
-                    nextFilter = params.filterModel || {},
-                    data = {
-                        offset: params.startRow,
-                        order: this.store.order.mapOrderForModel(nextOrder),
-                        filter: this.store.filter.mapFilterForModel(nextFilter)
-                    };
+              var nextOrder = params.sortModel || [],
+                  nextFilter = params.filterModel || {},
+                  data = {
+                      offset: params.startRow,
+                      order: this.store.order.mapOrderForModel(nextOrder),
+                      filter: this.store.filter.mapFilterForModel(nextFilter)
+                  };
 
-                this.store.order.list = nextOrder.map(function(next) {
-                  var item = data.order.find(function(entity) {
-                    return next.colId === entity.key;
-                  });
-
-                  next.order = item.order;
-
-                  return next;
+              this.store.order.list = nextOrder.map(function(next) {
+                var item = data.order.find(function(entity) {
+                  return next.colId === entity.key;
                 });
-                // this.store.filter.list = nextFilter;
 
-                self.gridOptions.api.showLoadingOverlay();
+                next.order = item.order;
 
-                self.model.fetch(data).then(function(response) {
-                    params.successCallback(response, self.model.length <= params.endRow ? self.model.length : -1);
-                    self.gridOptions.api.hideOverlay();
-                });
+                return next;
+              });
+              this.store.filter.hash = nextFilter;
+
+              self.gridOptions.api.showLoadingOverlay();
+
+              self.model.fetch(data).then(function(response) {
+                  params.successCallback(response, self.model.length <= params.endRow ? self.model.length : -1);
+                  self.gridOptions.api.hideOverlay();
+              });
             }
         },
 
         onGridReady: function () {
-          // self.presetData($scope.gridOptions, win.history.state);
+          
         },
         onModelUpdated: function() {
           

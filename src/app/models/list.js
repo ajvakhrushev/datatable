@@ -28,17 +28,12 @@
               "limit": this.limit,
               "offset": data.offset || 0,
               "order": this.order.preUpdate(data.order),
-              "filter": this.filter.preUpdate(data.order)
+              "filter": this.filter.preUpdate(data.filter)
             };
 
         return this.rest.fetch(params, options).then(function(response) {
             self.offset = params.offset;
             self.list = response.list;
-            // self.list = response.list.map(function(next, index) {
-            //   next.index = params.offset + index;
-
-            //   return next;
-            // });
 
             if(params.offset === 0) {
               self.length = response.length;
