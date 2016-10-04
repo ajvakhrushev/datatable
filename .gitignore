@@ -1,9 +1,9 @@
 .tmp
+.backup
 .idea
 node_modules
 dist
-*.swo
-*.swp
+.*.sw?
 *.un
 *~
 src/fixture/clients.1.min.json
