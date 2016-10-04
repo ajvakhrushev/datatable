@@ -174,9 +174,7 @@
 
                     return nextList.map(function(next) {
 		      var column = columnApi.getColumn(next.key);
-
 		      next.category = column.filter ? column.filter : 'string';
-
 		      return next;
 		    });
                   };

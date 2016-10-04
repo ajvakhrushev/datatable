@@ -88,6 +88,7 @@ function makeMultiplySortFn(list) {
    var length = list.length;
 
    list.sort((prev, next) => prev.order > next.order ? 1 : -1);
+   // console.log(JSON.stringify(list));
 
    return function(prev, next) {
       var a, b, item, reverse, result, i;
