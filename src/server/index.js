@@ -241,7 +241,6 @@ var filterStrategies = (function() {
       var data = arguments[0] || {};
 
       return list .filter((next) => next.category === 'common' || next.category === data.category)
-      // return list .filter((next) => next.category === 'common' || next.category === 'number')
                   .find((next) => next.type === data.type);
     }
   };
