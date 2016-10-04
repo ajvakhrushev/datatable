@@ -2,7 +2,7 @@
 .idea
 node_modules
 dist
-*.swp
-*.un
 src/fixture/clients.1.min.json
 src/fixture/clients.2.min.json
+*.swp
+*.un
