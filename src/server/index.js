@@ -131,7 +131,7 @@ app.get(/^.*$/, function (req, res) {
   res.sendFile(config.path.app + '/index.html');
 });
 
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
   console.log('App Server running on port 3000');
 });
 
