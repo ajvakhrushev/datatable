@@ -165,7 +165,7 @@ api.post('/list', function (req, res) {
       data.cache.sort(makeMultiplySortFn(req.body.order));
     }
   }
-
+  console.log(data.cache.length);
   return res.json({
     list: data.cache.slice(req.body.offset, req.body.offset + req.body.limit),
     length: data.cache.length
