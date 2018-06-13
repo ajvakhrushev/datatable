@@ -165,7 +165,7 @@ api.post('/list', function (req, res) {
       data.cache.sort(makeMultiplySortFn(req.body.order));
     }
   }
-  console.log(data.cache.length);
+
   return res.json({
     list: data.cache.slice(req.body.offset, req.body.offset + req.body.limit),
     length: data.cache.length
@@ -179,7 +179,7 @@ api.get('/list/:id', function (req, res) {
   res.json(response);
 });
 
-api.listen(9000, function () {
+api.listen(process.env.PORT || 9000, function () {
   console.log('API Server running on port 9000');
 });
 
