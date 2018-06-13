@@ -1,25 +1,10 @@
 const fs = require('fs');
-const path = require('path');
 const express = require('express');
-const bodyParser = require( 'body-parser' );
-const jsonMinify = require( 'node-json-minify' );
+const bodyParser = require('body-parser');
+// const jsonMinify = require('node-json-minify');
+const config = require('./config');
 
-const config = (function() {
-
-  var root = path.resolve(__dirname, '../../'),
-    src = root + '/src';
-
-  return {
-    path: {
-      root: root,
-      src: src,
-      app: src + '/app',
-      assets: src + '/assets',
-      fixture: src + '/fixture'
-    }
-  };
-
-}());
+var PORT = process.env.PORT || 9000;
 
 var data = {
   stable: fetchData(),
@@ -73,7 +58,7 @@ function makeMultiplyFilterFn(list) {
   return function(next) {
     for(i = 0; i < length; i++) {
       var item = strategies[i],
-					value = item.category === 'string' ? next[item.key].toLowerCase() : next[item.key];
+          value = item.category === 'string' ? next[item.key].toLowerCase() : next[item.key];
 
       if(!item.method(value, item.value)) {
         return false;
@@ -118,24 +103,6 @@ function makeMultiplySortFn(list) {
    };
 }
 
-// application server
-const app = express();
-
-app.use('/node_modules',  express.static(config.path.root + '/node_modules'));
-app.use('/Utilities',  express.static(config.path.root + '/Utilities'));
-app.use('/app', express.static(config.path.app));
-app.use('/assets', express.static(config.path.assets));
-app.use('/fixture', express.static(config.path.fixture));
-
-app.get(/^.*$/, function (req, res) {
-  res.sendFile(config.path.app + '/index.html');
-});
-
-app.listen(process.env.PORT || 3000, function () {
-  console.log('App Server running on port 3000');
-});
-
-// api server
 const api = express();
 
 api.use(bodyParser.json());
@@ -179,8 +146,8 @@ api.get('/list/:id', function (req, res) {
   res.json(response);
 });
 
-api.listen(process.env.PORT || 9000, function () {
-  console.log('API Server running on port 9000');
+api.listen(PORT, function () {
+  console.log('API Server running on port ' + PORT);
 });
 
 // *********************************************************

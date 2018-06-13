@@ -4,7 +4,7 @@
   const url = window.location;
 
   win.app.config = {
-    endpoint: url.protocol + '//' + url.hostname + ':9000'
+    endpoint: 'https://smart-datatable-api.herokuapp.com'
   };
 
 }(window));
