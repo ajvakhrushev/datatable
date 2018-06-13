@@ -1,8 +1,7 @@
 {
   "name": "datatable",
   "version": "0.0.1",
-  "description": "smart datatable",
-  "main": "src/server/index.js",
+  "repository": "https://github.com/ajvakhrushev/datatable",
   "dependencies": {
     "ag-grid": "^6.0.0"
   },
