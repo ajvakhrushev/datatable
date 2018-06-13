@@ -12,7 +12,7 @@
     "node-json-minify": "^1.0.0"
   },
   "scripts": {
-    "start": "node src/server/app.js"
+    "start": "node src/server/api.js"
   },
   "author": ""
 }
